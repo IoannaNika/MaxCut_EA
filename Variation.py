@@ -49,6 +49,37 @@ def custom_crossover( fitness: FitnessFunction, individual_a: Individual, indivi
    	# Implement your custom crossover here
 	offspring_a.genotype = individual_a.genotype.copy()
 	offspring_b.genotype = individual_b.genotype.copy()
+
+	# indegree: weight sum of edges incident to vertices in the same set
+	# outdegree: weight sum of edges incident to vertices in different sets
 	
+	# get ajacency matrix
+	adjacency_matrix = fitness.get_adjacency_matrix()
+
+	# get indegree and outdegree
+	indegrees = np.zeros(l)
+	outdegrees = np.zeros(l)
+	for i in range(l):
+		for j in range(l):
+			if i != j:
+				if offspring_a.genotype[i] == offspring_a.genotype[j] and j in adjacency_matrix[i]:
+					indegrees[i] += fitness.get_edge_weight(i,j)
+				elif offspring_a.genotype[i] != offspring_a.genotype[j] and j in adjacency_matrix[i]:
+					outdegrees[i] += fitness.get_edge_weight(i,j)
+
+	# calculate the gain per node defined as the difference between indegree and outdegree
+	gains = np.zeros(l)
+	for i in range(l):
+		gains[i] = indegrees[i] - outdegrees[i]
+	
+	# normalize gains as probabilities
+	gains = gains / np.sum(gains)
+
+	# perform crossover with probability proportional to gain
+	for i in range(l):
+		if np.random.uniform() < gains[i]:
+			offspring_a.genotype[i] = 1 - offspring_a.genotype[i]
+			offspring_b.genotype[i] = 1 - offspring_b.genotype[i]
+		
 	return [offspring_a, offspring_b]
 
