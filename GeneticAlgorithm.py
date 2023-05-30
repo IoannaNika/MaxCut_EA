@@ -35,6 +35,8 @@ class GeneticAlgorithm:
 				self.variation_operator = Variation.two_point_crossover
 			elif options["variation"] == "CustomCrossover":
 				self.variation_operator = partial(Variation.custom_crossover, self.fitness)
+			elif options["variation"] == "CliqueCrossover":
+				self.variation_operator = Variation.clique_crossover
 
 	def initialize_population( self ):
 		self.population = [Individual.initialize_uniform_at_random(self.fitness.dimensionality) for i in range(self.population_size)]
