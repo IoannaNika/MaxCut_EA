@@ -71,6 +71,8 @@ def custom_crossover( fitness: FitnessFunction, individual_a: Individual, indivi
 	gains = np.zeros(l)
 	for i in range(l):
 		gains[i] = indegrees[i] - outdegrees[i]
+		if gains[i] < 0:
+			gains[i] = 0
 	
 	# normalize gains as probabilities
 	if np.sum(gains) != 0:
