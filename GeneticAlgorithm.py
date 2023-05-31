@@ -62,8 +62,10 @@ class GeneticAlgorithm:
 
 	def run( self ):
 		try:
+			fitnesses = []
 			self.initialize_population()
 			while( self.fitness.number_of_evaluations < self.evaluation_budget ):
+				fitnesses.append(self.get_best_fitness())
 				self.number_of_generations += 1
 				if( self.verbose and self.number_of_generations%100 == 0 ):
 					self.print_statistics()
@@ -77,8 +79,8 @@ class GeneticAlgorithm:
 			if( self.print_final_results ):
 				print(exception)
 				print("Best fitness: {:.1f}, Nr._of_evaluations: {}".format(exception.individual.fitness, self.fitness.number_of_evaluations))
-			return exception.individual.fitness, self.fitness.number_of_evaluations
+			return exception.individual.fitness, self.fitness.number_of_evaluations, fitnesses, self.number_of_generations
 		if( self.print_final_results ):
 			self.print_statistics()
-		return self.get_best_fitness(), self.fitness.number_of_evaluations
+		return self.get_best_fitness(), self.fitness.number_of_evaluations, fitnesses, self.number_of_generations
 
