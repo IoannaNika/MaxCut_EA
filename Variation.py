@@ -80,11 +80,30 @@ def custom_crossover( fitness: FitnessFunction, individual_a: Individual, indivi
 	else:
 		gains = np.ones(l) / l
 
+	# adjust probabilities so that the number of 1s and 0s  is balanced
+	# count number of 1s and 0s
+	num_ones = np.sum(offspring_a.genotype)
+	num_zeros = l - num_ones
+	# adjust probabilities
+	for i in range(l):
+		if offspring_a.genotype[i] == 1:
+			gains[i] = gains[i] * num_zeros
+		else:
+			gains[i] = gains[i] * num_ones
+	
+	# normalize again
+	if np.sum(gains) != 0:
+		gains = gains / np.sum(gains)
+	else:
+		gains = np.ones(l) / l
+
+
 	# perform crossover with probability proportional to gain
 	for i in range(l):
 		if np.random.uniform() < gains[i]:
 			offspring_a.genotype[i] = 1 - offspring_a.genotype[i]
 			offspring_b.genotype[i] = 1 - offspring_b.genotype[i]
 		
+	
 	return [offspring_a, offspring_b]
 
