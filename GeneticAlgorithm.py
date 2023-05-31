@@ -9,7 +9,7 @@ from Individual import Individual
 from Utils import ValueToReachFoundException
 
 class GeneticAlgorithm:
-	def __init__(self, fitness: FitnessFunction, population_size, **options ): 
+	def __init__(self, fitness: FitnessFunction, population_size, stats, **options ):
 		self.fitness = fitness
 		self.evaluation_budget = 1000000
 		self.variation_operator = Variation.uniform_crossover
@@ -18,7 +18,9 @@ class GeneticAlgorithm:
 		self.population = []
 		self.number_of_generations = 0
 		self.verbose = False
-		self.print_final_results = True 
+		self.print_final_results = True
+		self.stats = stats
+		self.options = options
 
 		if "verbose" in options:
 			self.verbose = options["verbose"]
@@ -62,10 +64,9 @@ class GeneticAlgorithm:
 
 	def run( self ):
 		try:
-			fitnesses = []
 			self.initialize_population()
+			self.stats.loc[len(self.stats)] = [self.get_best_fitness(), self.number_of_generations, self.population_size, self.options['variation']]
 			while( self.fitness.number_of_evaluations < self.evaluation_budget ):
-				fitnesses.append(self.get_best_fitness())
 				self.number_of_generations += 1
 				if( self.verbose and self.number_of_generations%100 == 0 ):
 					self.print_statistics()
@@ -73,14 +74,17 @@ class GeneticAlgorithm:
 				offspring = self.make_offspring()
 				selection = self.make_selection(offspring)
 				self.population = selection
+				self.stats.loc[len(self.stats)] = [self.get_best_fitness(), self.number_of_generations,
+											   self.population_size, self.options['variation']]
+
 			if( self.verbose ):
 				self.print_statistics()
 		except ValueToReachFoundException as exception:
 			if( self.print_final_results ):
 				print(exception)
 				print("Best fitness: {:.1f}, Nr._of_evaluations: {}".format(exception.individual.fitness, self.fitness.number_of_evaluations))
-			return exception.individual.fitness, self.fitness.number_of_evaluations, fitnesses, self.number_of_generations
+			return exception.individual.fitness, self.fitness.number_of_evaluations, self.stats
 		if( self.print_final_results ):
 			self.print_statistics()
-		return self.get_best_fitness(), self.fitness.number_of_evaluations, fitnesses, self.number_of_generations
+		return self.get_best_fitness(), self.fitness.number_of_evaluations, self.stats
 
