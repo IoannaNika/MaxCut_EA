@@ -5,20 +5,20 @@ from GeneticAlgorithm import GeneticAlgorithm
 import FitnessFunction
 
 if __name__ == "__main__":
-	crossovers = ["CustomCrossover", "UniformCrossover", "OnePointCrossover"]
-	colors = ['blue', 'green', 'm']
+	crossovers = [ "KMeansCrossover", "CustomCrossover", "UniformCrossover", "OnePointCrossover"]
+	colors = ['yellow', 'blue', 'green', 'm']
 	cross_over_fitnesses = []
 
 	for cx in crossovers:
-		inst = "maxcut-instances/setA/n0000100i09.txt"
+		inst = "maxcut-instances/setC/n0000025i06.txt"
 		with open("output-{}.txt".format(cx),"w") as f:
 			population_size = 10
 			num_evaluations_list = []
-			num_runs = 10
+			num_runs = 1
 			num_success = 0
 			all_fitnesses = []
+			fitness = FitnessFunction.MaxCut(inst)
 			for i in range(num_runs):
-				fitness = FitnessFunction.MaxCut(inst)
 				genetic_algorithm = GeneticAlgorithm(fitness,population_size,variation=cx,evaluation_budget=100000,verbose=False)
 				best_fitness, num_evaluations, fitnesses, num_generations = genetic_algorithm.run()
 				if best_fitness == fitness.value_to_reach:

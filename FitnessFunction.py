@@ -61,7 +61,10 @@ class MaxCut(FitnessFunction):
 		self.preprocess()
 
 	def preprocess( self ):
-		pass
+		self.distance_matrix = self.distance_matrix()
+		clusters = int(np.sqrt(self.dimensionality))
+		self.k_means_clusters = self.k_means(clusters)
+
 
 	def read_problem_instance( self, instance_file ):
 		with open( instance_file, "r" ) as f_in:
@@ -100,7 +103,62 @@ class MaxCut(FitnessFunction):
 		return self.weights[(v0,v1)]
 
 	def get_degree( self, v ):
-		return len(adjacency_list(v))
+		return len(self.adjacency_list(v))
+
+	def get_shortest_paths(self, v):
+		shortest_path = np.full((self.dimensionality), float('inf'))
+		shortest_path[v] = 0
+		queue = [v]
+		
+		while len(queue) > 0:
+			node = queue.pop()
+			for next_node in self.adjacency_list[node]:
+				distance = shortest_path[node] + self.weights[(node, next_node)]
+				if  distance < shortest_path[next_node]:
+					shortest_path[next_node] = distance
+					queue.append(next_node)
+		return shortest_path
+
+	def distance_matrix(self):
+		distance_matrix = np.zeros((self.dimensionality, self.dimensionality))
+		for i in range(self.dimensionality):
+			distance_matrix[i] = self.get_shortest_paths(i)
+		return distance_matrix
+
+	def k_means(self, k, max_iters=100):
+		clusters = np.zeros(self.dimensionality)
+		# randomly choose the centroids
+		centroids = np.random.choice(self.dimensionality, size=k, replace=False)
+
+		for iteration in range(max_iters):
+
+			# Create a matrix only keeping distances to selected centroids
+			centroid_dists = np.where(np.isin(np.arange(self.dimensionality), centroids),
+						  self.distance_matrix, np.full_like(self.distance_matrix, float('inf')))
+
+			# Put each node in a cluster by choosing the centroid with the minimum distance to it
+			# This array contains the index of the cluster for each node
+			node_centroid = np.argmin(centroid_dists, axis=1)
+
+			mean_dists = np.zeros((k))
+			for i in range(k):
+				assert(centroids[i] in np.unique(node_centroid))
+				clusters[np.argwhere(node_centroid == centroids[i])] = i
+				# Set all rows and columns of nodes not in this cluster to 0
+				not_in_cluster_indices = np.argwhere(node_centroid != centroids[i])
+				dists_cluster = self.distance_matrix.copy()
+				dists_cluster[not_in_cluster_indices, :] = 0
+				dists_cluster[:, not_in_cluster_indices] = 0
+
+				# Get mean of distance to all other nodes in cluster
+				mean_dist = np.mean(dists_cluster, axis=0)
+				mean_dist[not_in_cluster_indices] = float('inf')
+
+				mean_dists[i] = np.min(mean_dist)
+				# The node with the minimum mean distance to all other nodes in the cluster is the new centroid
+				centroids[i] = np.argmin(mean_dist)
+			#print("Mean distance sum: ", np.sum(mean_dists))
+		return clusters
 
 	def evaluate( self, individual: Individual ):
 		result = 0
