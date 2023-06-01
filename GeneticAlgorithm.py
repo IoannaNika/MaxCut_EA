@@ -4,6 +4,7 @@ from functools import partial
 
 import Variation
 import Selection
+import Mutation
 from FitnessFunction import FitnessFunction
 from Individual import Individual
 from Utils import ValueToReachFoundException
@@ -13,6 +14,7 @@ class GeneticAlgorithm:
 		self.fitness = fitness
 		self.evaluation_budget = 1000000
 		self.variation_operator = Variation.uniform_crossover
+		self.mutation_operator = Mutation.identity_mutation
 		self.selection_operator = Selection.tournament_selection
 		self.population_size = population_size
 		self.population = []
@@ -37,6 +39,14 @@ class GeneticAlgorithm:
 				self.variation_operator = Variation.two_point_crossover
 			elif options["variation"] == "CustomCrossover":
 				self.variation_operator = partial(Variation.custom_crossover, self.fitness)
+			elif options["variation"] == "CliqueCrossover":
+				self.variation_operator = Variation.clique_crossover
+
+		if "mutation" in options:
+			if options["mutation"] == "IdentityMutation":
+				self.mutation_operator = Mutation.identity_mutation
+			elif options["mutation"] == "RandomMutation":
+				self.mutation_operator = Mutation.random_mutation
 
 	def initialize_population( self ):
 		self.population = [Individual.initialize_uniform_at_random(self.fitness.dimensionality) for i in range(self.population_size)]
@@ -47,7 +57,7 @@ class GeneticAlgorithm:
 		offspring = []
 		order = np.random.permutation(self.population_size)
 		for i in range(len(order)//2):
-			offspring = offspring + self.variation_operator(self.population[order[2*i]],self.population[order[2*i+1]])
+			offspring = offspring + [self.mutation_operator(o) for o in self.variation_operator(self.population[order[2*i]],self.population[order[2*i+1]])]
 		for individual in offspring:
 			self.fitness.evaluate(individual)
 		return offspring
