@@ -1,0 +1,36 @@
+Generation 9999: Best_fitness: 7943.0, Avg._fitness: 7943.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7907.0, Avg._fitness: 7907.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7927.0, Avg._fitness: 7927.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7975.0, Avg._fitness: 7973.800, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7965.0, Avg._fitness: 7964.100, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7972.0, Avg._fitness: 7972.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7941.0, Avg._fitness: 7937.200, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7972.0, Avg._fitness: 7972.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7956.0, Avg._fitness: 7956.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7977.0, Avg._fitness: 7977.000, Nr._of_evaluations: 100000
+0/10 runs successful
+100000.0 evaluations (median)
+Generation 9999: Best_fitness: 7529.0, Avg._fitness: 7529.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7678.0, Avg._fitness: 7678.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7612.0, Avg._fitness: 7612.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7678.0, Avg._fitness: 7678.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7678.0, Avg._fitness: 7678.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7711.0, Avg._fitness: 7711.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7716.0, Avg._fitness: 7716.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7582.0, Avg._fitness: 7582.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7667.0, Avg._fitness: 7667.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7668.0, Avg._fitness: 7668.000, Nr._of_evaluations: 100000
+0/10 runs successful
+100000.0 evaluations (median)
+Generation 9999: Best_fitness: 7586.0, Avg._fitness: 7586.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7528.0, Avg._fitness: 7528.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7578.0, Avg._fitness: 7578.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7570.0, Avg._fitness: 7570.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7571.0, Avg._fitness: 7571.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7611.0, Avg._fitness: 7611.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7661.0, Avg._fitness: 7661.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7586.0, Avg._fitness: 7586.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7600.0, Avg._fitness: 7600.000, Nr._of_evaluations: 100000
+Generation 9999: Best_fitness: 7596.0, Avg._fitness: 7596.000, Nr._of_evaluations: 100000
+0/10 runs successful
+100000.0 evaluations (median)

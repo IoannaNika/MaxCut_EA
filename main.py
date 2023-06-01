@@ -10,9 +10,9 @@ if __name__ == "__main__":
 	cross_over_fitnesses = []
 
 	for cx in crossovers:
-		inst = "maxcut-instances/setE/n0000020i00.txt"
+		inst = "maxcut-instances/setA/n0000100i09.txt"
 		with open("output-{}.txt".format(cx),"w") as f:
-			population_size = 500
+			population_size = 10
 			num_evaluations_list = []
 			num_runs = 10
 			num_success = 0
