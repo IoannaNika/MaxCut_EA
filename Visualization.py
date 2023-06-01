@@ -1,8 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-
-import FitnessFunction
-
+import pandas as pd
 
 def visualize_graph(adjacency_list: dict, weights: dict, genotype=None):
     graph = nx.DiGraph()
@@ -36,7 +34,74 @@ def visualize_graph(adjacency_list: dict, weights: dict, genotype=None):
     plt.figure(1, figsize=(300, 100), dpi=60)
     plt.show()
 
+def visualize_fitness_generation(data):
+    cross_over_data = data.groupby("crossover")
+    fig, ax = plt.subplots()
+
+    for i, (group_name, group_data) in enumerate(cross_over_data):
+        sorted_generation = group_data.sort_values('generation')
+        medians = sorted_generation.groupby('generation')['fitness'].median()
+
+        generation_values = medians.index
+        fitness_values = medians.values
+        ax.plot(generation_values, fitness_values)
+        ax.scatter(group_data['generation'], group_data['fitness'], label=group_name)
+
+    ax.legend()
+    ax.set_xlim(0, 30)
+    plt.title("fitness vs generation")
+    plt.xlabel("generation")
+    plt.ylabel("fitness")
+    plt.show()
+
+
+def visualize_fitness_generation_population(data, crossover, names):
+    fig, ax = plt.subplots()
+
+    for i, data_population in enumerate(data):
+        current_crossover = data_population.loc[data_population['crossover'] == crossover]
+
+        sorted_generation = current_crossover.sort_values('generation')
+        medians = sorted_generation.groupby('generation')['fitness'].median()
+        generation_values = medians.index
+        fitness_values = medians.values
+        ax.plot(generation_values, fitness_values, label=names[i])
+
+    ax.legend()
+    ax.set_xlim(0, 30)
+    plt.title("fitness vs generation for " + crossover + " per population size ")
+    plt.xlabel("generation")
+    plt.ylabel("fitness")
+    plt.show()
+
+def visualize_avg_fitness_population(data, population_size, cross_overs):
+    fig, ax = plt.subplots()
+    all_fitness = [[] for i in range(len(cross_overs))]
+
+    for i, crossover in enumerate(cross_overs):
+        for d in data:
+            all_fitness[i].append(d.groupby('crossover')['fitness'].mean()[cross_overs[i]])
+
+    for i, avg_fitness in enumerate(all_fitness):
+        ax.plot(population_size, avg_fitness, label=cross_overs[i])
+
+    ax.legend()
+    plt.title("avg fitness vs population size")
+    plt.xlabel("population size")
+    plt.ylabel("fitness")
+    plt.show()
+
+
+
 if  __name__ == '__main__':
-    inst = "maxcut-instances/setD/n0000010i00.txt"
-    fitness = FitnessFunction.MaxCut(inst)
-    visualize_graph(fitness.adjacency_list, fitness.weights)
+    # inst = "maxcut-instances/setD/n0000010i00.txt"
+    # fitness = FitnessFunction.MaxCut(inst)
+    # visualize_graph(fitness.adjacency_list, fitness.weights)
+    # file = "results/setE_50_10.pkl"
+    # data = pd.read_pickle(file)
+    #
+    # visualize_fitness_generation(data)
+    population_twenty = pd.read_pickle("results/setE_20_10.pkl")
+    population_fifty = pd.read_pickle("results/setE_50_10.pkl")
+
+    visualize_avg_fitness_population([population_twenty, population_fifty], [20, 50], ["CustomCrossover", "UniformCrossover", "OnePointCrossover"])
