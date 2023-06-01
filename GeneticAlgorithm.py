@@ -55,7 +55,7 @@ class GeneticAlgorithm:
 		offspring = []
 		order = np.random.permutation(self.population_size)
 		for i in range(len(order)//2):
-			offspring = offspring + self.mutation_operator(self.variation_operator(self.population[order[2*i]],self.population[order[2*i+1]]))
+			offspring = offspring + [self.mutation_operator(o) for o in self.variation_operator(self.population[order[2*i]],self.population[order[2*i+1]])]
 		for individual in offspring:
 			self.fitness.evaluate(individual)
 		return offspring
