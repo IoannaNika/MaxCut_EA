@@ -10,7 +10,7 @@ if __name__ == "__main__":
 	save_stats = True
 	stats = pd.DataFrame(columns=['fitness', 'generation', 'population size', 'crossover'])
 
-	population_sizes = [20, 40, 80]
+	population_sizes = [8, 16, 32, 64, 128, 256]
 	num_evaluations_list = []
 	num_runs = 1
 	num_success = 0
