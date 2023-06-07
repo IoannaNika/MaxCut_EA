@@ -1,16 +1,21 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import FitnessFunction
 
 
-def visualize_graph(adjacency_list: dict, weights: dict, genotype=None):
+def visualize_graph(genotype):
+    inst = "maxcut-instances/setD/n0000010i00.txt"
+    fitness = FitnessFunction.MaxCut(inst)
+    adjacency_list = fitness.adjacency_list
+    weights = fitness.weights
     graph = nx.DiGraph()
     graph.add_nodes_from(adjacency_list.keys())
     color_map = ['green' for x in adjacency_list.keys()]
 
-    if genotype:
-        color_map = ['red' if x == 1 else 'blue' for x in genotype]
+
+    color_map = ['red' if x == 1 else 'blue' for x in genotype]
     for k, v in adjacency_list.items():
         graph.add_weighted_edges_from(([(k, t, weights[(k,t)]) for t in v]))
 
@@ -96,6 +101,13 @@ def visualize_avg_fitness_population(data, population_size, cross_overs):
 
 
 if  __name__ == '__main__':
-    inst = "maxcut-instances/setD/n0000010i00.txt"
-    fitness = FitnessFunction.MaxCut(inst)
-    visualize_graph(fitness.adjacency_list, fitness.weights)
+    # inst = "maxcut-instances/setD/n0000010i00.txt"
+    # fitness = FitnessFunction.MaxCut(inst)
+    # visualize_graph(fitness.adjacency_list, fitness.weights)
+
+    twenty = pd.read_pickle("results/test_experiment/setD_n0000010i00.txt_20_1.pkl")
+    thirthy = pd.read_pickle('results/test_experiment/setD_n0000010i00.txt_40_1.pkl')
+    fourthy = pd.read_pickle("results/test_experiment/setD_n0000010i00.txt_80_1.pkl")
+
+    visualize_avg_fitness_population([twenty, thirthy, fourthy], [20,40, 80], ["CliqueCrossover", "UniformCrossover", "OnePointCrossover", "CustomCrossover"])
+    visualize_fitness_generation_population([twenty, thirthy, fourthy], "CustomCrossover", ["20", '40', '80'])
