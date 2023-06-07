@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
 	population_sizes = [8, 16, 32, 64, 128, 256]
 	num_evaluations_list = []
-	num_runs = 1
+	num_runs = 10
 	num_success = 0
 	setA = ['n0000006i05.txt', 'n0000012i05.txt', 'n0000025i05.txt', 'n0000050i05.txt', 'n0000100i05.txt']
 	setB = ['n0000009i05.txt', 'n0000016i05.txt', 'n0000025i05.txt', 'n0000049i05.txt', 'n0000100i05.txt']
