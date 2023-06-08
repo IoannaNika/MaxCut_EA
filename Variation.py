@@ -113,10 +113,10 @@ def clique_crossover(individual_a: Individual, individual_b: Individual, p=0.5):
 
 	# TODO: Do something with chain vertices
 	cliques = len(individual_a.genotype) // 5
-        l = len(individual_a.genotype)
+	l = len(individual_a.genotype)
 	offspring_a = Individual(l)
 	offspring_b = Individual(l)
-        return [offspring_a, offspring_b]
+	return [offspring_a, offspring_b]
 
 def k_means_crossover( maxCut: MaxCut, individual_a: Individual, individual_b: Individual ):
 	assert len(individual_a.genotype) == len(individual_b.genotype), "solutions should be equal in size"
@@ -124,10 +124,28 @@ def k_means_crossover( maxCut: MaxCut, individual_a: Individual, individual_b: I
 	offspring_a = Individual(l)
 	offspring_b = Individual(l)
 
-	clusters = maxCut.k_means_clusters
-	m = clusters % 2 == 0
+	offspring_a.genotype = individual_a.genotype.copy()
+	offspring_b.genotype = individual_b.genotype.copy()
 
-	offspring_a.genotype = np.where(m, individual_a.genotype, individual_b.genotype)
-	offspring_b.genotype = np.where(1 - m, individual_a.genotype, individual_b.genotype)
+	clusters = maxCut.k_means_clusters
+	for c in np.unique(clusters):
+		cluster_indices = np.argwhere(clusters == c)
+		c = Individual(cluster_indices.shape[0])
+		d = Individual(cluster_indices.shape[0])
+		c.genotype = individual_a.genotype[cluster_indices]
+		d.genotype = individual_b.genotype[cluster_indices]
+
+		[c, d] = custom_crossover(maxCut, c, d)
+
+		offspring_a.genotype[cluster_indices] = c.genotype
+		offspring_b.genotype[cluster_indices] = d.genotype
+
+
+	
+	m = clusters % 2 == np.random.randint(0,1)
+
+
+	offspring_a.genotype = np.where(m, offspring_a.genotype, offspring_b.genotype)
+	offspring_b.genotype = np.where(1 - m, offspring_a.genotype, offspring_b.genotype)
 	
 	return [offspring_a, offspring_b]
