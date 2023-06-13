@@ -148,7 +148,4 @@ if  __name__ == '__main__':
     # visualize_avg_fitness_population([twenty, thirthy, fourthy], [20,40, 80], ["CliqueCrossover", "UniformCrossover", "OnePointCrossover", "CustomCrossover"])
     # visualize_fitness_generation_population([twenty, thirthy, fourthy], "CustomCrossover", ["20", '40', '80'])
 
-    # visualize_population_size_relation("setA", ['n0000006i05'], [8, 16, 32, 64, 128, 256], 'CustomCrossover', 10)
-    b, x = get_relationship([1,2,3,4,5], [8,16,32,64,32])
-    print(b)
-    print(x)
+    visualize_population_size_relation("setA", ['n0000006i05', 'n0000012i05'], [256], 'CustomCrossover', 4)
