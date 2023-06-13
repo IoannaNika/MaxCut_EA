@@ -1,6 +1,9 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
 
 import FitnessFunction
 
@@ -99,15 +102,53 @@ def visualize_avg_fitness_population(data, population_size, cross_overs):
     plt.show()
 
 
+def visualize_population_size_relation(instance_type, instance_names, population_sizes, cross_over_type, num_eval=10, colors=['g','r','y','c']):
+    fig, ax = plt.subplots()
+    optimums = []
+    for i, instance_name in enumerate(instance_names):
+        inst = "maxcut-instances/"+instance_type+"/"+instance_name+".txt"
+        fitness = FitnessFunction.MaxCut(inst)
+        median_values = []
+
+        for population_size in population_sizes:
+            data = pd.read_pickle("results/"+instance_type+"/"+instance_type+"_"+instance_name+"_"+str(population_size)+"_"+str(num_eval)+".pkl")
+            max = data.loc[data['crossover'] == cross_over_type].groupby("round")['fitness'].max()
+            median_values.append(abs((max.median() - fitness.value_to_reach) / fitness.value_to_reach) * 100)
+            for j, current_max in enumerate(max):
+                relative_error = abs((current_max - fitness.value_to_reach) / fitness.value_to_reach) * 100
+                ax.scatter(population_size, relative_error, color=colors[i])
+
+        plt.plot(population_sizes, median_values, color=colors[i], label=str(fitness.dimensionality))
+        optimums.append(population_sizes[median_values.index(min(median_values))])
+
+    plt.xlabel("population size")
+    plt.ylabel("relative error")
+    ax.legend()
+    plt.show()
+
+    return optimums
+
+def get_relationship(optimums, population_sizes):
+    model = LinearRegression()
+    model.fit(np.array(population_sizes).reshape((-1, 1)), optimums)
+    intercept = model.intercept_
+    slope = model.coef_
+
+    return intercept, slope
 
 if  __name__ == '__main__':
     # inst = "maxcut-instances/setD/n0000010i00.txt"
     # fitness = FitnessFunction.MaxCut(inst)
     # visualize_graph(fitness.adjacency_list, fitness.weights)
 
-    twenty = pd.read_pickle("results/test_experiment/setD_n0000010i00.txt_20_1.pkl")
-    thirthy = pd.read_pickle('results/test_experiment/setD_n0000010i00.txt_40_1.pkl')
-    fourthy = pd.read_pickle("results/test_experiment/setD_n0000010i00.txt_80_1.pkl")
+    # twenty = pd.read_pickle("results/test_experiment/setD_n0000010i00.txt_20_1.pkl")
+    # thirthy = pd.read_pickle('results/test_experiment/setD_n0000010i00.txt_40_1.pkl')
+    # fourthy = pd.read_pickle("results/test_experiment/setD_n0000010i00.txt_80_1.pkl")
+    #
+    # visualize_avg_fitness_population([twenty, thirthy, fourthy], [20,40, 80], ["CliqueCrossover", "UniformCrossover", "OnePointCrossover", "CustomCrossover"])
+    # visualize_fitness_generation_population([twenty, thirthy, fourthy], "CustomCrossover", ["20", '40', '80'])
 
-    visualize_avg_fitness_population([twenty, thirthy, fourthy], [20,40, 80], ["CliqueCrossover", "UniformCrossover", "OnePointCrossover", "CustomCrossover"])
-    visualize_fitness_generation_population([twenty, thirthy, fourthy], "CustomCrossover", ["20", '40', '80'])
+    # visualize_population_size_relation("setA", ['n0000006i05'], [8, 16, 32, 64, 128, 256], 'CustomCrossover', 10)
+    b, x = get_relationship([1,2,3,4,5], [8,16,32,64,32])
+    print(b)
+    print(x)

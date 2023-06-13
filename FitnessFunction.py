@@ -10,8 +10,9 @@ class FitnessFunction:
 		self.number_of_evaluations = 0
 		self.value_to_reach = np.inf
 
-	def evaluate( self, individual: Individual ):
+	def evaluate( self, individual: Individual, fitness, generation, population_size, cross_over_type, round, stats):
 		self.number_of_evaluations += 1
+		stats.loc[len(stats)] = [fitness, generation, self.number_of_evaluations, population_size, cross_over_type, round]
 		if individual.fitness >= self.value_to_reach:
 			raise ValueToReachFoundException(individual)
 
@@ -21,9 +22,9 @@ class OneMax(FitnessFunction):
 		self.dimensionality = dimensionality
 		self.value_to_reach = dimensionality
 
-	def evaluate( self, individual: Individual ):
+	def evaluate( self, individual: Individual, fitness, generation, population_size, cross_over_type, round, stats):
 		individual.fitness = np.sum(individual.genotype)
-		super().evaluate(individual)
+		super().evaluate(individual, fitness, generation, population_size, cross_over_type, round, stats)
 
 class DeceptiveTrap(FitnessFunction):
 	def __init__( self, dimensionality ):
@@ -42,13 +43,13 @@ class DeceptiveTrap(FitnessFunction):
 		else:
 			return k-1-bit_sum
 
-	def evaluate( self, individual: Individual ):
+	def evaluate( self, individual: Individual,fitness, generation, population_size, cross_over_type, round, stats):
 		num_subfunctions = self.dimensionality // self.trap_size
 		result = 0
 		for i in range(num_subfunctions):
 			result += self.trap_function(individual.genotype[i*self.trap_size:(i+1)*self.trap_size])
 		individual.fitness = result
-		super().evaluate(individual)
+		super().evaluate(individual, fitness, generation, population_size, cross_over_type, round, stats)
 
 class MaxCut(FitnessFunction):
 	def __init__( self, instance_file ):
@@ -102,7 +103,7 @@ class MaxCut(FitnessFunction):
 	def get_degree( self, v ):
 		return len(adjacency_list(v))
 
-	def evaluate( self, individual: Individual ):
+	def evaluate( self, individual: Individual, fitness, generation, population_size, cross_over_type, round, stats):
 		result = 0
 		for e in self.edge_list:
 			v0, v1 = e
@@ -111,5 +112,5 @@ class MaxCut(FitnessFunction):
 				result += w
 
 		individual.fitness = result
-		super().evaluate(individual)
+		super().evaluate(individual, fitness, generation, population_size, cross_over_type, round, stats)
 

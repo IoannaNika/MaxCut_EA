@@ -10,7 +10,7 @@ from Individual import Individual
 from Utils import ValueToReachFoundException
 
 class GeneticAlgorithm:
-	def __init__(self, fitness: FitnessFunction, population_size, stats, **options ):
+	def __init__(self, fitness: FitnessFunction, population_size, stats, round, **options ):
 		self.fitness = fitness
 		self.evaluation_budget = 1000000
 		self.variation_operator = Variation.uniform_crossover
@@ -22,6 +22,7 @@ class GeneticAlgorithm:
 		self.verbose = False
 		self.print_final_results = True
 		self.stats = stats
+		self.round = round
 		self.options = options
 
 		if "verbose" in options:
@@ -51,7 +52,7 @@ class GeneticAlgorithm:
 	def initialize_population( self ):
 		self.population = [Individual.initialize_uniform_at_random(self.fitness.dimensionality) for i in range(self.population_size)]
 		for individual in self.population:
-			self.fitness.evaluate(individual)
+			self.fitness.evaluate(individual, self.get_best_fitness(), self.number_of_generations, self.population_size, self.options['variation'], self.round, self.stats)
 
 	def make_offspring( self ):
 		offspring = []
@@ -59,7 +60,7 @@ class GeneticAlgorithm:
 		for i in range(len(order)//2):
 			offspring = offspring + [self.mutation_operator(o) for o in self.variation_operator(self.population[order[2*i]],self.population[order[2*i+1]])]
 		for individual in offspring:
-			self.fitness.evaluate(individual)
+			self.fitness.evaluate(individual, self.get_best_fitness(), self.number_of_generations, self.population_size, self.options['variation'], self.round, self.stats)
 		return offspring
 
 	def make_selection( self, offspring ):
@@ -75,7 +76,6 @@ class GeneticAlgorithm:
 	def run( self ):
 		try:
 			self.initialize_population()
-			self.stats.loc[len(self.stats)] = [self.get_best_fitness(), self.number_of_generations, self.population_size, self.options['variation']]
 			while( self.fitness.number_of_evaluations < self.evaluation_budget ):
 				self.number_of_generations += 1
 				if( self.verbose and self.number_of_generations%100 == 0 ):
@@ -84,9 +84,6 @@ class GeneticAlgorithm:
 				offspring = self.make_offspring()
 				selection = self.make_selection(offspring)
 				self.population = selection
-				self.stats.loc[len(self.stats)] = [self.get_best_fitness(), self.number_of_generations,
-											   self.population_size, self.options['variation']]
-
 			if( self.verbose ):
 				self.print_statistics()
 		except ValueToReachFoundException as exception:
