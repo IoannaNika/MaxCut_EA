@@ -6,7 +6,7 @@ import FitnessFunction
 import pandas as pd
 
 if __name__ == "__main__":
-	crossovers = ["UniformCrossover", "OnePointCrossover", "CustomCrossover"]
+	crossovers = ["UniformCrossover", "TwoPointCrossover","OnePointCrossover", "CustomCrossover", "KMeansCrossover"]
 	save_stats = True
 	stats = pd.DataFrame(columns=['fitness', 'generation', 'evaluation','population size', 'crossover', 'round'])
 

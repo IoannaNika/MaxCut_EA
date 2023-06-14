@@ -42,6 +42,8 @@ class GeneticAlgorithm:
 				self.variation_operator = partial(Variation.custom_crossover, self.fitness)
 			elif options["variation"] == "CliqueCrossover":
 				self.variation_operator = Variation.clique_crossover
+			elif options["variation"] == "KMeansCrossover":
+				self.variation_operator = partial(Variation.k_means_crossover, self.fitness)
 
 		if "mutation" in options:
 			if options["mutation"] == "IdentityMutation":
