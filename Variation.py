@@ -40,7 +40,7 @@ def two_point_crossover(individual_a: Individual, individual_b: Individual ):
 	
 	return [offspring_a, offspring_b]
 
-def custom_crossover( fitness: FitnessFunction, individual_a: Individual, individual_b: Individual ):
+def custom_crossover( fitness: FitnessFunction, individual_a: Individual, individual_b: Individual, offset=0):
 	assert len(individual_a.genotype) == len(individual_b.genotype), "solutions should be equal in size"
 	l = len(individual_a.genotype)
 	offspring_a = Individual(l)
@@ -62,10 +62,10 @@ def custom_crossover( fitness: FitnessFunction, individual_a: Individual, indivi
 	for i in range(l):
 		for j in range(l):
 			if i != j:
-				if offspring_a.genotype[i] == offspring_a.genotype[j] and j in adjacency_matrix[i]:
-					indegrees[i] += fitness.get_weight(i,j)
-				elif offspring_a.genotype[i] != offspring_a.genotype[j] and j in adjacency_matrix[i]:
-					outdegrees[i] += fitness.get_weight(i,j)
+				if offspring_a.genotype[i] == offspring_a.genotype[j] and j+offset in adjacency_matrix[i+offset]:
+					indegrees[i] += fitness.get_weight(i+offset,j+offset)
+				elif offspring_a.genotype[i] != offspring_a.genotype[j] and j+offset in adjacency_matrix[i+offset]:
+					outdegrees[i] += fitness.get_weight(i+offset,j+offset)
 
 	# calculate the gain per node defined as the difference between indegree and outdegree
 	gains = np.zeros(l)
@@ -160,3 +160,21 @@ def k_means_crossover( maxCut: MaxCut, individual_a: Individual, individual_b: I
 	offspring_b.genotype = np.where(1 - m, offspring_a.genotype, offspring_b.genotype)
 
 	return [offspring_a, offspring_b]
+
+def clique_and_custom_crossover(fitness: FitnessFunction, individual_a: Individual, individual_b: Individual, p=0.5):
+        # Apply custom crossover on individual cliques
+        l = len(individual_a.genotype)
+
+        for i in range(0, l, 5):
+                clique_a, clique_b = Individual(5), Individual(5)
+                clique_a.genotype = individual_a.genotype[i:i+5]
+                clique_b.genotype = individual_b.genotype[i:i+5]
+
+                # i is passed as an offset to custom crossover to match the vertices of the original graph
+                clique_a, clique_b = custom_crossover(fitness, clique_a, clique_b, i)
+
+                individual_a.genotype[i:i+5] = clique_a.genotype
+                individual_b.genotype[i:i+5] = clique_b.genotype
+
+        # Apply clique crossover on the entire graph
+        return clique_crossover(individual_a, individual_b, p)
