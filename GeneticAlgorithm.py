@@ -42,7 +42,7 @@ class GeneticAlgorithm:
 				self.variation_operator = partial(Variation.custom_crossover, self.fitness)
 			elif options["variation"] == "CliqueCrossover":
 				self.variation_operator = Variation.clique_crossover
-                        elif options["variation"] == "CustomCliqueCrossover":
+			elif options["variation"] == "CustomCliqueCrossover":
 				self.variation_operator = partial(Variation.clique_and_custom_crossover, self.fitness)
 			elif options["variation"] == "KMeansCrossover":
 				self.variation_operator = partial(Variation.k_means_crossover, self.fitness)
