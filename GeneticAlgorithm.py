@@ -80,6 +80,9 @@ class GeneticAlgorithm:
 	def run( self ):
 		try:
 			self.initialize_population()
+			prev_fitness = self.get_best_fitness()
+			patience = 50
+			patience_counter = 0
 			while( self.fitness.number_of_evaluations < self.evaluation_budget ):
 				self.number_of_generations += 1
 				if( self.verbose and self.number_of_generations%100 == 0 ):
@@ -88,6 +91,23 @@ class GeneticAlgorithm:
 				offspring = self.make_offspring()
 				selection = self.make_selection(offspring)
 				self.population = selection
+
+				best_fitness = self.get_best_fitness()
+
+				# If fitness has not improved, increae patience counter
+				if best_fitness <= prev_fitness:
+					patience_counter += 1
+				else:
+					# Otherwise reset patience counter
+					patience_counter = 0
+
+				prev_fitness = best_fitness
+
+				if patience_counter == patience:
+					print("Stopped early due to low performance, patience counter was reached: ", patience)
+					print("Generation", self.number_of_generations)
+					break
+					
 			if( self.verbose ):
 				self.print_statistics()
 		except ValueToReachFoundException as exception:
