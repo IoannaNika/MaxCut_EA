@@ -6,19 +6,19 @@ import FitnessFunction
 import pandas as pd
 
 if __name__ == "__main__":
-	crossovers = ["UniformCrossover", "OnePointCrossover", "CustomCrossover"]
+	crossovers = ["UniformCrossover", "TwoPointCrossover","OnePointCrossover", "CustomCrossover", "KMeansCrossover"]
 	save_stats = True
-	stats = pd.DataFrame(columns=['fitness', 'generation', 'population size', 'crossover'])
+	stats = pd.DataFrame(columns=['fitness', 'generation', 'evaluation','population size', 'crossover', 'round'])
 
 	population_sizes = [8, 16, 32, 64, 128, 256]
 	num_evaluations_list = []
 	num_runs = 10
 	num_success = 0
 	setA = ['n0000006i05.txt', 'n0000012i05.txt', 'n0000025i05.txt', 'n0000050i05.txt', 'n0000100i05.txt']
-	setB = ['n0000009i05.txt', 'n0000016i05.txt', 'n0000025i05.txt', 'n0000049i05.txt', 'n0000100i05.txt']
-	setC = ['n0000006i05.txt', 'n0000012i05.txt', 'n0000025i05.txt', 'n0000050i05.txt', 'n0000100i05.txt']
-	setD = ['n0000010i05.txt', 'n0000020i05.txt', 'n0000040i05.txt', 'n0000080i05.txt', 'n0000160i05.txt']
-	setE = ['n0000010i05.txt', 'n0000020i05.txt', 'n0000040i05.txt', 'n0000080i05.txt', 'n0000160i05.txt']
+	# setB = ['n0000009i05.txt', 'n0000016i05.txt', 'n0000025i05.txt', 'n0000049i05.txt', 'n0000100i05.txt']
+	# setC = ['n0000006i05.txt', 'n0000012i05.txt', 'n0000025i05.txt', 'n0000050i05.txt', 'n0000100i05.txt']
+	# setD = ['n0000010i05.txt', 'n0000020i05.txt', 'n0000040i05.txt', 'n0000080i05.txt', 'n0000160i05.txt']
+	# setE = ['n0000010i05.txt', 'n0000020i05.txt', 'n0000040i05.txt', 'n0000080i05.txt', 'n0000160i05.txt']
 	instances = setA
 
 	for instance_name in instances:
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
 					for i in range(num_runs):
 						fitness = FitnessFunction.MaxCut(inst)
-						genetic_algorithm = GeneticAlgorithm(fitness,population_size, stats,variation=cx,evaluation_budget=100000,verbose=False)
+						genetic_algorithm = GeneticAlgorithm(fitness,population_size, stats, i,variation=cx,evaluation_budget=100000,verbose=False)
 						best_fitness, num_evaluations, stats = genetic_algorithm.run()
 						if best_fitness == fitness.value_to_reach:
 							num_success += 1
@@ -43,5 +43,6 @@ if __name__ == "__main__":
 			if save_stats:
 				instance_set = inst.split('/')[1]
 				file_name = instance_set + "_" + instance_name.split('.')[0] + "_" + str(population_size) + "_" + str(num_runs)
-				stats.to_pickle("results/test_experiment/" + file_name + ".pkl")
+				stats.to_pickle("results/setA/" + file_name + ".pkl")
+				stats = pd.DataFrame(columns=['fitness', 'generation', 'evaluation','population size', 'crossover', 'round'])
 
