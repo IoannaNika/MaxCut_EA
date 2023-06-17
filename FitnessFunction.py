@@ -14,6 +14,8 @@ class FitnessFunction:
 		self.number_of_evaluations += 1
 		stats.loc[len(stats)] = [fitness, generation, self.number_of_evaluations, population_size, cross_over_type, round]
 		if individual.fitness >= self.value_to_reach:
+			fitness = individual.fitness
+			stats.loc[len(stats)] = [fitness, generation, self.number_of_evaluations, population_size, cross_over_type, round]
 			raise ValueToReachFoundException(individual)
 
 class OneMax(FitnessFunction):
