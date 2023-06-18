@@ -136,6 +136,28 @@ def get_relationship(optimums, population_sizes):
 
     return intercept, slope
 
+def visualize_fitness_generation_optimal_crossover(set, name, crossovers, sizes, ylim=None):
+    fig, ax = plt.subplots()
+
+    for i in range(len(crossovers)):
+        data = pd.read_pickle('results/'+set+'/'+set+'_'+name+'_'+str(sizes[i])+'_10.pkl')
+        per_cx = data.loc[data['crossover'] == crossovers[i]]
+        sorted_generation = per_cx.sort_values('generation')
+        medians = sorted_generation.groupby('generation')['fitness'].median()
+        generation_values = medians.index
+        fitness_values = medians.values
+        ax.plot(generation_values, fitness_values, label=crossovers[i])
+        # ax.scatter(per_cx['generation'], per_cx['fitness'], label=crossovers[i])
+
+    ax.legend()
+    # if ylim:
+        # plt.ylim(ylim)
+    plt.title("avg fitness vs generation for " + name +' in set ' + set)
+    plt.xlabel("generation")
+    plt.ylabel("fitness")
+    plt.show()
+
+
 if  __name__ == '__main__':
     # inst = "maxcut-instances/setD/n0000010i00.txt"
     # fitness = FitnessFunction.MaxCut(inst)
